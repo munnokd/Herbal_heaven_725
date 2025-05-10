@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Dashboard – Herbal Haven</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <style>
+    .dashboard-section {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="green">
+    <div class="nav-wrapper container">
+      <a href="#!" class="brand-logo">Herbal Haven Admin</a>
+      <ul class="right hide-on-med-and-down">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="#!" onclick="logout()">Logout</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container dashboard-section">
+    <h5>📦 Product Management</h5>
+    <div class="card">
+      <div class="card-content">
+        <span class="card-title">Add Product</span>
+        <div class="row">
+          <form id="productForm" class="col s12">
+            <div class="row">
+              <div class="input-field col s6">
+                <input id="name" name="name" type="text" required>
+                <label for="name">Product Name</label>
+              </div>
+              <div class="input-field col s6">
+                <input id="price" name="price" type="number" min="0" step="0.01" required>
+                <label for="price">Price</label>
+              </div>
+            </div>
+            <div class="input-field">
+              <textarea id="description" name="description" class="materialize-textarea" required></textarea>
+              <label for="description">Description</label>
+            </div>
+            <div class="input-field">
+              <input id="stock" name="stock" type="number" min="0" required>
+              <label for="stock">Stock</label>
+            </div>
+            <button class="btn green" type="submit">Add Product</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <h5 class="dashboard-section">📊 Sales Analytics (Coming Soon)</h5>
+    <div class="card-panel grey lighten-3">
+      <p>Visualize daily/weekly sales, top-selling products, and revenue charts here.</p>
+    </div>
+
+    <h5 class="dashboard-section">👥 User Accounts (Coming Soon)</h5>
+    <div class="card-panel grey lighten-3">
+      <p>Manage user roles, view customer data, and handle account access.</p>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.getElementById('productForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const data = {
+        name: document.getElementById('name').value,
+        price: parseFloat(document.getElementById('price').value),
+        description: document.getElementById('description').value,
+        stock: parseInt(document.getElementById('stock').value)
+      };
+
+      fetch('/api/products', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(response => {
+        M.toast({ html: 'Product Added!', classes: 'green' });
+        this.reset();
+      })
+      .catch(error => {
+        console.error(error);
+        M.toast({ html: 'Error adding product.', classes: 'red' });
+      });
+    });
+
+    function logout() {
+      localStorage.removeItem('token');
+      location.href = 'login.html';
+    }
+  </script>
+
+</body>
+</html>
