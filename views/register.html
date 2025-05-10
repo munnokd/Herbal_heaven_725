@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - Herbal Haven</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"/>
+</head>
+<body class="container">
+
+  <h4 class="center-align">Register</h4>
+  <form id="registerForm" class="card-panel">
+    <div class="input-field">
+      <input id="name" type="text" required>
+      <label for="name">Full Name</label>
+    </div>
+    <div class="input-field">
+      <input id="email" type="email" required>
+      <label for="email">Email</label>
+    </div>
+    <div class="input-field">
+      <input id="password" type="password" required minlength="6">
+      <label for="password">Password</label>
+    </div>
+    <button class="btn waves-effect waves-light" type="submit">Register</button>
+    <div id="registerMessage" class="red-text center-align"></div>
+  </form>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $('#registerForm').submit(async function (e) {
+      e.preventDefault();
+      const name = $('#name').val();
+      const email = $('#email').val();
+      const password = $('#password').val();
+
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, password }),
+        });
+
+        const data = await res.json();
+        if (res.ok) {
+          M.toast({ html: 'Registered successfully!', classes: 'green' });
+          window.location.href = '/views/login.html';
+        } else {
+          $('#registerMessage').text(data.error || 'Registration failed');
+        }
+      } catch (err) {
+        $('#registerMessage').text('Server error');
+      }
+    });
+  </script>
+</body>
+</html>
