@@ -1,8 +1,7 @@
 const mongoose = require('mongoose');
 const { Category } = require('../models/Project');
 
-// MongoDB connection URL
-const mongoURL = process.env.MONGODB_URI || 'mongodb://localhost:27017/herbal_heaven';
+
 
 // Categories to be created
 const categories = [
@@ -44,7 +43,7 @@ const categories = [
 async function initCategories() {
     try {
         // Connect to MongoDB
-        await mongoose.connect(mongoURL);
+        await mongoose.connect(process.env.MONGO_URI);
         console.log('Connected to MongoDB');
 
         // Delete existing categories
