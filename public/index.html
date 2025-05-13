@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Herbal Heaven - Natural Products</title>
+    <!-- Materialize CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <!-- Material Icons -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="green darken-1">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo">Herbal Heaven</a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down" id="nav-links">
+                <li><a href="products.html">Products</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="cart.html"><i class="material-icons left">shopping_cart</i>Cart</a></li>
+                <li class="logged-out"><a href="login.html">Login</a></li>
+                <li class="logged-out"><a href="register.html">Register</a></li>
+                <li class="logged-in" style="display: none;">
+                    <a class="dropdown-trigger" href="#" data-target="user-dropdown">
+                        Account<i class="material-icons right">arrow_drop_down</i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation -->
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="products.html">Products</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="cart.html">Cart</a></li>
+        <li class="logged-out"><a href="login.html">Login</a></li>
+        <li class="logged-out"><a href="register.html">Register</a></li>
+        <li class="logged-in" style="display: none;"><a href="profile.html">Profile</a></li>
+        <li class="logged-in" style="display: none;"><a href="#" id="logout">Logout</a></li>
+    </ul>
+
+    <!-- User Dropdown -->
+    <ul id="user-dropdown" class="dropdown-content">
+        <li><a href="profile.html">Profile</a></li>
+        <li><a href="orders.html">Orders</a></li>
+        <li class="divider"></li>
+        <li><a href="#" id="logout">Logout</a></li>
+    </ul>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Content will be dynamically loaded here -->
+    </main>
+
+    <!-- Footer -->
+    <footer class="page-footer green darken-1">
+        <div class="container">
+            <div class="row">
+                <div class="col l6 s12">
+                    <h5 class="white-text">Herbal Heaven</h5>
+                    <p class="grey-text text-lighten-4">Your source for natural and herbal products.</p>
+                </div>
+                <div class="col l4 offset-l2 s12">
+                    <h5 class="white-text">Links</h5>
+                    <ul>
+                        <li><a class="grey-text text-lighten-3" href="about.html">About Us</a></li>
+                        <li><a class="grey-text text-lighten-3" href="contact.html">Contact</a></li>
+                        <li><a class="grey-text text-lighten-3" href="privacy.html">Privacy Policy</a></li>
+                        <li><a class="grey-text text-lighten-3" href="terms.html">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <div class="container">
+                © 2024 Herbal Heaven
+                <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="/js/app.js"></script>
+</body>
+</html> 

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Herbal Heaven</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <nav class="green darken-1">
+        <div class="nav-wrapper container">
+            <a href="index.html" class="brand-logo">Herbal Heaven</a>
+            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+            <ul class="right hide-on-med-and-down">
+                <li><a href="products.html">Products</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="register.html">Register</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <ul class="sidenav" id="mobile-nav">
+        <li><a href="products.html">Products</a></li>
+        <li><a href="blog.html">Blog</a></li>
+        <li><a href="register.html">Register</a></li>
+    </ul>
+
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col s12 m8 offset-m2 l6 offset-l3">
+                    <div class="card">
+                        <div class="card-content">
+                            <span class="card-title center-align">Login to Herbal Heaven</span>
+                            <form id="login-form">
+                                <div class="input-field">
+                                    <i class="material-icons prefix">email</i>
+                                    <input type="email" id="email" name="email" required>
+                                    <label for="email">Email</label>
+                                </div>
+                                <div class="input-field">
+                                    <i class="material-icons prefix">lock</i>
+                                    <input type="password" id="password" name="password" required>
+                                    <label for="password">Password</label>
+                                </div>
+                                <div class="row">
+                                    <div class="col s12">
+                                        <label>
+                                            <input type="checkbox" id="remember-me" />
+                                            <span>Remember me</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col s12 center-align">
+                                        <button class="btn waves-effect waves-light green" type="submit">
+                                            Login
+                                            <i class="material-icons right">send</i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="card-action center-align">
+                            <p>Don't have an account? <a href="register.html" class="green-text">Register here</a></p>
+                            <a href="forgot-password.html" class="green-text">Forgot Password?</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        // Function to show toast messages
+        function showToast(message, classes = 'green') {
+            M.toast({html: message, classes: classes});
+        }
+
+        // Function to verify token and redirect based on role
+        async function verifyTokenAndRedirect(token) {
+            try {
+                const response = await fetch('/api/auth/verify', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.user && data.user.role === 'admin') {
+                        window.location.href = '/admin/dashboard.html';
+                    } else {
+                        window.location.href = 'index.html';
+                    }
+                } else {
+                    localStorage.removeItem('token');
+                    localStorage.removeItem('user');
+                }
+            } catch (error) {
+                console.error('Token verification error:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('user');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is already logged in
+            const token = localStorage.getItem('token');
+            if (token) {
+                verifyTokenAndRedirect(token);
+                return;
+            }
+
+            // Initialize Materialize components
+            M.Sidenav.init(document.querySelectorAll('.sidenav'));
+
+            // Handle form submission
+            document.getElementById('login-form').addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const rememberMe = document.getElementById('remember-me').checked;
+
+                try {
+                    const response = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ email, password, rememberMe })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Store token and user data
+                        localStorage.setItem('token', data.token);
+                        localStorage.setItem('user', JSON.stringify(data.user));
+
+                        // Show success message
+                        showToast('Login successful!');
+
+                        // Verify token and redirect
+                        await verifyTokenAndRedirect(data.token);
+                    } else {
+                        throw new Error(data.message || 'Login failed');
+                    }
+                } catch (error) {
+                    console.error('Login error:', error);
+                    showToast(error.message || 'Login failed. Please check your credentials.', 'red');
+                }
+            });
+        });
+    </script>
+</body>
+</html> 
