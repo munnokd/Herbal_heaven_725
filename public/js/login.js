@@ -1,73 +1,78 @@
+// Function to show toast messages
+function showToast(message, classes = 'green') {
+    M.toast({html: message, classes: classes});
+}
+
+// Function to verify token and redirect based on role
+async function verifyTokenAndRedirect(token) {
+    try {
+        const response = await fetch('/api/auth/verify', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            if (data.user && data.user.role === 'admin') {
+                window.location.href = '/admin/dashboard.html';
+            } else {
+                window.location.href = 'products.html';
+            }
+        } else {
+            localStorage.removeItem('token');
+            localStorage.removeItem('user');
+        }
+    } catch (error) {
+        console.error('Token verification error:', error);
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Check if user is already logged in
     const token = localStorage.getItem('token');
     if (token) {
-        window.location.href = '/';
+        verifyTokenAndRedirect(token);
         return;
     }
 
-    // Setup form submission handler
-    const loginForm = document.getElementById('login-form');
-    loginForm.addEventListener('submit', handleLogin);
-});
+    // Handle form submission
+    document.getElementById('login-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const rememberMe = document.getElementById('remember-me').checked;
 
-async function handleLogin(e) {
-    e.preventDefault();
+        try {
+            const response = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password, rememberMe })
+            });
 
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-    const rememberMe = document.getElementById('remember-me').checked;
+            const data = await response.json();
 
-    try {
-        const response = await fetch('/api/auth/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                email,
-                password,
-                rememberMe
-            })
-        });
+            if (response.ok) {
+                // Store token and user data
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('user', JSON.stringify(data.user));
 
-        const data = await response.json();
+                // Show success message
+                showToast('Login successful!');
 
-        if (response.ok) {
-            // Store token
-            localStorage.setItem('token', data.token);
-            
-            // Store user data if remember me is checked
-            if (rememberMe) {
-                localStorage.setItem('user', JSON.stringify({
-                    id: data.user._id,
-                    name: data.user.name,
-                    email: data.user.email,
-                    role: data.user.role
-                }));
-            }
-
-            // Redirect based on role
-            if (data.user.role === 'admin') {
-                window.location.href = '/admin/dashboard';
+                // Verify token and redirect
+                await verifyTokenAndRedirect(data.token);
             } else {
-                // Redirect to the page they were trying to access, or home
-                const redirectUrl = new URLSearchParams(window.location.search).get('redirect');
-                window.location.href = redirectUrl || '/';
+                throw new Error(data.message || 'Login failed');
             }
-        } else {
-            throw new Error(data.message || 'Login failed');
+        } catch (error) {
+            console.error('Login error:', error);
+            showToast(error.message || 'Login failed. Please check your credentials.', 'red');
         }
-    } catch (error) {
-        console.error('Login error:', error);
-        showToast(error.message || 'Login failed. Please check your credentials.', 'red');
-    }
-}
-
-function showToast(message, classes = 'red') {
-    M.toast({
-        html: message,
-        classes: classes,
-        displayLength: 3000
     });
-} 
+}); 

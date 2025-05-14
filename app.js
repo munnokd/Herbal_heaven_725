@@ -3,8 +3,43 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const path = require("path");
+const http = require("http");
+const socketIo = require("socket.io");
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"]
+  }
+});
+
+// Socket.IO connection handling
+io.on("connection", (socket) => {
+  console.log("New client connected");
+  
+  // Join a room based on user ID if authenticated
+  socket.on("authenticate", (userId) => {
+    if (userId) {
+      socket.join(`user_${userId}`);
+      console.log(`User ${userId} authenticated and joined their room`);
+    }
+    
+    // Join the public notifications room
+    socket.join("public_notifications");
+    console.log("Client joined public notifications room");
+  });
+  
+  socket.on("disconnect", () => {
+    console.log("Client disconnected");
+  });
+});
+
+// Make io accessible to our routes
+app.set("io", io);
+// Make io globally available
+global.io = io;
 
 // Import routes
 const authRoutes = require("./routes/authRoutes");
@@ -13,6 +48,8 @@ const orderRoutes = require("./routes/orderRoutes");
 const cartRoutes = require("./routes/cartRoutes");
 const blogRoutes = require("./routes/blogRoutes");
 const userRoutes = require("./routes/userRoutes");
+const categoryRoutes = require("./routes/categoryRoutes");
+const notificationRoutes = require("./routes/notificationRoutes");
 
 // Middleware
 app.use(cors());
@@ -26,6 +63,8 @@ app.use("/api/orders", orderRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/blog", blogRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/categories", categoryRoutes);
+app.use("/api/notifications", notificationRoutes);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, "public")));
@@ -61,6 +100,6 @@ app.use((err, req, res, next) => {
 });
 
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`App listening on port ${port}`);
 });

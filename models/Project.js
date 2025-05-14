@@ -102,6 +102,40 @@ const articleSchema = new mongoose.Schema({
     updatedAt: Date
 });
 
+const notificationSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['product', 'order', 'system'],
+        default: 'system'
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String
+    },
+    link: {
+        type: String
+    },
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const User = mongoose.model('User', userSchema);
 
 const Product = mongoose.model('Product', productSchema);
@@ -120,6 +154,8 @@ const Promotion = mongoose.model('Promotion', promotionSchema);
 
 const Article = mongoose.model('Article', articleSchema);
 
+const Notification = mongoose.model('Notification', notificationSchema);
+
 // Export all models
 module.exports = {
     User,
@@ -130,5 +166,6 @@ module.exports = {
     Category,
     Supplier,
     Promotion,
-    Article
+    Article,
+    Notification
 };

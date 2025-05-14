@@ -2,8 +2,11 @@ document.addEventListener('DOMContentLoaded', function() {
     // Initialize Materialize components
     M.FormSelect.init(document.querySelectorAll('select'));
 
-    // Load initial products
-    loadProducts();
+    // Load categories first, then products
+    loadCategories().then(() => {
+        // Load initial products
+        loadProducts();
+    });
 
     // Setup event listeners
     setupEventListeners();
@@ -33,6 +36,26 @@ function setupEventListeners() {
     });
 }
 
+// Load Categories
+async function loadCategories() {
+    try {
+        const response = await fetch('/api/categories');
+        const categories = await response.json();
+        
+        const categoryFilter = document.getElementById('category-filter');
+        categoryFilter.innerHTML = `
+            <option value="">All Categories</option>
+            ${categories.map(category => `
+                <option value="${category._id}">${category.name}</option>
+            `).join('')}
+        `;
+        M.FormSelect.init(categoryFilter);
+    } catch (error) {
+        console.error('Error loading categories:', error);
+        showToast('Error loading categories', 'red');
+    }
+}
+
 // Load Products
 async function loadProducts(page = 1) {
     try {
@@ -50,8 +73,7 @@ async function loadProducts(page = 1) {
         const response = await fetch(`/api/products?${queryParams}`);
         const data = await response.json();
 
-        displayProducts(data.products);
-        updatePagination(data.currentPage, data.totalPages);
+        displayProducts(data);
     } catch (error) {
         console.error('Error loading products:', error);
         showToast('Error loading products', 'red');
@@ -61,18 +83,28 @@ async function loadProducts(page = 1) {
 // Display Products
 function displayProducts(products) {
     const grid = document.getElementById('products-grid');
+    
+    if (!products || products.length === 0) {
+        grid.innerHTML = `
+            <div class="col s12 center-align">
+                <h5>No products found</h5>
+            </div>
+        `;
+        return;
+    }
+    
     grid.innerHTML = products.map(product => `
         <div class="col s12 m6 l4">
             <div class="card product-card">
                 <div class="card-image">
                     <img src="${product.images[0] || '/images/placeholder.jpg'}" alt="${product.name}">
-                    <a class="btn-floating halfway-fab waves-effect waves-light green add-to-cart"
-                       data-product-id="${product._id}">
+                    <a class="btn-floating halfway-fab waves-effect waves-light green add-to-cart" data-product-id="${product._id}">
                         <i class="material-icons">add_shopping_cart</i>
                     </a>
                 </div>
                 <div class="card-content">
                     <span class="card-title">${product.name}</span>
+                    <p class="category-tag">${product.category ? product.category.name : 'Uncategorized'}</p>
                     <p class="truncate">${product.description}</p>
                     <div class="price">$${product.price.toFixed(2)}</div>
                 </div>
@@ -82,41 +114,6 @@ function displayProducts(products) {
             </div>
         </div>
     `).join('');
-}
-
-// Update Pagination
-function updatePagination(currentPage, totalPages) {
-    const pagination = document.getElementById('pagination');
-    let paginationHTML = '';
-
-    // Previous button
-    paginationHTML += `
-        <li class="${currentPage === 1 ? 'disabled' : 'waves-effect'}">
-            <a href="#!" onclick="loadProducts(${currentPage - 1})">
-                <i class="material-icons">chevron_left</i>
-            </a>
-        </li>
-    `;
-
-    // Page numbers
-    for (let i = 1; i <= totalPages; i++) {
-        paginationHTML += `
-            <li class="${currentPage === i ? 'active green' : 'waves-effect'}">
-                <a href="#!" onclick="loadProducts(${i})">${i}</a>
-            </li>
-        `;
-    }
-
-    // Next button
-    paginationHTML += `
-        <li class="${currentPage === totalPages ? 'disabled' : 'waves-effect'}">
-            <a href="#!" onclick="loadProducts(${currentPage + 1})">
-                <i class="material-icons">chevron_right</i>
-            </a>
-        </li>
-    `;
-
-    pagination.innerHTML = paginationHTML;
 }
 
 // Add to Cart Handler

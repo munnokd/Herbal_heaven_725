@@ -9,27 +9,8 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav class="green darken-1">
-        <div class="nav-wrapper container">
-            <a href="index.html" class="brand-logo">Herbal Heaven</a>
-            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="products.html">Products</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="cart.html">Cart</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <ul class="sidenav" id="mobile-nav">
-        <li><a href="products.html">Products</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="cart.html">Cart</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="register.html">Register</a></li>
-    </ul>
+    <!-- Navigation will be dynamically loaded -->
+    <div id="nav-placeholder"></div>
 
     <main>
         <div class="container">
@@ -129,11 +110,11 @@
         </div>
     </main>
 
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            M.Sidenav.init(document.querySelectorAll('.sidenav'));
-        });
-    </script>
+    <script src="/js/nav.js"></script>
 </body>
 </html> 

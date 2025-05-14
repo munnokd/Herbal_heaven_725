@@ -1,5 +1,6 @@
 const { Product } = require("../models/Project");
 const { validationResult } = require('express-validator');
+const notificationController = require('./notificationController');
 
 exports.createProduct = async (req, res) => {
   try {
@@ -21,6 +22,15 @@ exports.createProduct = async (req, res) => {
     });
 
     await product.save();
+    
+    // Create notification for new product
+    try {
+      await notificationController.createProductNotification(product);
+    } catch (notifError) {
+      console.error('Error creating product notification:', notifError);
+      // We don't want to fail the product creation if notification fails
+    }
+    
     res.status(201).json(product);
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -131,9 +141,10 @@ exports.deleteProduct = async (req, res) => {
       return res.status(404).json({ message: 'Product not found' });
     }
 
-    await product.remove();
+    await Product.findByIdAndDelete(req.params.id);
     res.json({ message: 'Product deleted successfully' });
   } catch (error) {
+    console.error('Error deleting product:', error);
     res.status(500).json({ error: error.message });
   }
 };

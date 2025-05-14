@@ -326,14 +326,20 @@ async function likeComment(commentId) {
 // Load Related Articles
 async function loadRelatedArticles(category, currentArticleId) {
     try {
-        const response = await fetch(`/api/blog/articles/related?category=${category}&exclude=${currentArticleId}`);
+        // Instead of using a non-existent endpoint, fetch all articles and filter
+        const response = await fetch('/api/blog/articles');
         const articles = await response.json();
+        
+        // Filter articles to get related ones (same category, excluding current)
+        const relatedArticles = articles
+            .filter(article => article.category === category && article._id !== currentArticleId)
+            .slice(0, 3); // Limit to 3 related articles
 
         const container = document.getElementById('related-articles');
         const template = document.getElementById('related-article-template');
 
         container.innerHTML = '';
-        articles.forEach(article => {
+        relatedArticles.forEach(article => {
             const articleElement = template.content.cloneNode(true);
 
             articleElement.querySelector('img').src = article.image || '/images/blog/placeholder.jpg';

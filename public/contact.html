@@ -9,27 +9,8 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav class="green darken-1">
-        <div class="nav-wrapper container">
-            <a href="index.html" class="brand-logo">Herbal Heaven</a>
-            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="products.html">Products</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="cart.html">Cart</a></li>
-                <li><a href="login.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <ul class="sidenav" id="mobile-nav">
-        <li><a href="products.html">Products</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="cart.html">Cart</a></li>
-        <li><a href="login.html">Login</a></li>
-        <li><a href="register.html">Register</a></li>
-    </ul>
+    <!-- Navigation will be dynamically loaded -->
+    <div id="nav-placeholder"></div>
 
     <main>
         <div class="container">
@@ -148,46 +129,12 @@
         </div>
     </main>
 
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Materialize components
-            M.Sidenav.init(document.querySelectorAll('.sidenav'));
-            M.FormSelect.init(document.querySelectorAll('select'));
-            M.TextArea.init(document.querySelectorAll('.materialize-textarea'));
-
-            // Handle form submission
-            document.getElementById('contact-form').addEventListener('submit', async function(e) {
-                e.preventDefault();
-                
-                try {
-                    const formData = {
-                        name: document.getElementById('name').value,
-                        email: document.getElementById('email').value,
-                        phone: document.getElementById('phone').value,
-                        subject: document.getElementById('subject').value,
-                        message: document.getElementById('message').value
-                    };
-
-                    const response = await fetch('/api/contact', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    if (response.ok) {
-                        M.toast({html: 'Message sent successfully!', classes: 'green'});
-                        document.getElementById('contact-form').reset();
-                    } else {
-                        throw new Error('Failed to send message');
-                    }
-                } catch (error) {
-                    M.toast({html: 'Error sending message. Please try again.', classes: 'red'});
-                }
-            });
-        });
-    </script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/contact.js"></script>
 </body>
 </html> 

@@ -20,8 +20,29 @@ nav .brand-logo img {
     padding: 0 15px;
 }
 
+/* Cart Link Position */
+.cart-link {
+    position: relative;
+    padding-right: 10px !important;
+}
+
+/* Cart Badge */
 .cart-count {
-    margin-left: 5px;
+    position: absolute !important;
+    top: 0px !important;
+    right: -5px !important;
+    min-width: 20px !important;
+    height: 20px !important;
+    line-height: 20px !important;
+    font-size: 11px !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    border-radius: 50% !important;
+    padding: 0 !important;
+    background-color: white !important;
+    color: #4CAF50 !important;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14);
+    margin-left: 0 !important;
 }
 
 .sidenav .user-view {
@@ -454,4 +475,206 @@ nav .brand-logo img {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #45a049;
+}
+
+/* Notifications */
+.notification-bell {
+    position: relative;
+}
+
+.notification-badge {
+    position: absolute;
+    top: 0px;
+    right: -5px;
+    min-width: 20px;
+    height: 20px;
+    line-height: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    border-radius: 50% !important;
+    padding: 0;
+    background-color: white !important;
+    color: #4CAF50 !important;
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,0.14);
+}
+
+.notifications-dropdown {
+    width: 300px !important;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+.notifications-header {
+    padding: 10px;
+    background-color: #f5f5f5;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.notifications-header .title {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.notifications-header .mark-all-read {
+    font-size: 12px;
+    color: #26a69a;
+}
+
+.notifications-loading {
+    text-align: center;
+    padding: 20px;
+}
+
+.notification-item {
+    padding: 10px 15px;
+    border-bottom: 1px solid #e0e0e0;
+    position: relative;
+}
+
+.notification-item.unread {
+    background-color: #e8f5e9;
+}
+
+.notification-item.unread:after {
+    content: '';
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background-color: #4CAF50;
+}
+
+.notification-item a {
+    display: flex;
+    color: inherit;
+}
+
+.notification-image {
+    margin-right: 10px;
+}
+
+.notification-image img {
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.notification-content {
+    flex: 1;
+}
+
+.notification-title {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.notification-message {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 5px;
+}
+
+.notification-time {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Notifications Page Styles */
+.notification-card {
+    margin: 20px 0;
+    transition: all 0.3s ease;
+}
+
+.notification-card.unread {
+    border-left: 4px solid #4CAF50;
+}
+
+.notification-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.notification-type {
+    margin-right: 10px;
+}
+
+.notification-type.green {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.notification-type.blue {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+.notification-type.orange {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.notification-type.grey {
+    background-color: #f5f5f5;
+    color: #616161;
+}
+
+.notification-title {
+    font-size: 1.4rem;
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+.notification-message {
+    color: #616161;
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+}
+
+.notification-image {
+    margin-top: 15px;
+    margin-bottom: 20px;
+}
+
+.notification-image img {
+    max-height: 200px;
+    border-radius: 4px;
+    object-fit: cover;
+}
+
+.notification-actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: 10px;
+    border-top: 1px solid #e0e0e0;
+}
+
+/* Live Notification Toast */
+.notification-toast {
+    display: flex;
+    flex-direction: column;
+    min-width: 250px;
+}
+
+.notification-toast-title {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.notification-toast-message {
+    margin-bottom: 10px;
+}
+
+.toast-action {
+    color: white !important;
+    font-weight: bold;
+    text-transform: uppercase;
+    align-self: flex-end;
 } 

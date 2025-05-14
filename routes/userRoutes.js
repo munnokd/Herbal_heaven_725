@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { auth, adminAuth } = require('../middleware/auth');
+const auth = require('../middleware/auth').auth;
+const adminAuth = require('../middleware/auth').adminAuth;
 const {
     getUsers,
     getUserById,

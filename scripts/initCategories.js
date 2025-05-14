@@ -1,6 +1,6 @@
+require('dotenv').config();
 const mongoose = require('mongoose');
 const { Category } = require('../models/Project');
-
 
 
 // Categories to be created
@@ -40,9 +40,9 @@ const categories = [
 ];
 
 // Function to initialize categories
-async function initCategories() {
+const initCategories = async () => {
     try {
-        // Connect to MongoDB
+        // Connect to MongoDB using the URI from environment variable or default
         await mongoose.connect(process.env.MONGO_URI);
         console.log('Connected to MongoDB');
 

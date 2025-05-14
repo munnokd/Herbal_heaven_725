@@ -9,23 +9,8 @@
     <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-    <nav class="green darken-1">
-        <div class="nav-wrapper container">
-            <a href="index.html" class="brand-logo">Herbal Heaven</a>
-            <a href="#" data-target="mobile-nav" class="sidenav-trigger"><i class="material-icons">menu</i></a>
-            <ul class="right hide-on-med-and-down">
-                <li><a href="products.html">Products</a></li>
-                <li><a href="blog.html">Blog</a></li>
-                <li><a href="login.html">Login</a></li>
-            </ul>
-        </div>
-    </nav>
-
-    <ul class="sidenav" id="mobile-nav">
-        <li><a href="products.html">Products</a></li>
-        <li><a href="blog.html">Blog</a></li>
-        <li><a href="login.html">Login</a></li>
-    </ul>
+    <!-- Navigation will be dynamically loaded -->
+    <div id="nav-placeholder"></div>
 
     <main>
         <div class="container">
@@ -96,56 +81,12 @@
         </div>
     </main>
 
+    <!-- Footer will be dynamically loaded -->
+    <div id="footer-placeholder"></div>
+
+    <!-- Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Initialize Materialize components
-            M.Sidenav.init(document.querySelectorAll('.sidenav'));
-
-            // Handle form submission
-            document.getElementById('register-form').addEventListener('submit', async function(e) {
-                e.preventDefault();
-
-                const password = document.getElementById('password').value;
-                const confirmPassword = document.getElementById('confirm-password').value;
-
-                if (password !== confirmPassword) {
-                    M.toast({html: 'Passwords do not match', classes: 'red'});
-                    return;
-                }
-
-                const formData = {
-                    name: document.getElementById('name').value,
-                    email: document.getElementById('email').value,
-                    phone: document.getElementById('phone').value,
-                    password: password,
-                    newsletter: document.getElementById('newsletter').checked
-                };
-
-                try {
-                    const response = await fetch('/api/auth/register', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify(formData)
-                    });
-
-                    const data = await response.json();
-
-                    if (response.ok) {
-                        M.toast({html: 'Registration successful! Please login.', classes: 'green'});
-                        setTimeout(() => {
-                            window.location.href = 'login.html';
-                        }, 2000);
-                    } else {
-                        M.toast({html: data.message || 'Registration failed', classes: 'red'});
-                    }
-                } catch (error) {
-                    M.toast({html: 'Error registering user', classes: 'red'});
-                }
-            });
-        });
-    </script>
+    <script src="/js/nav.js"></script>
+    <script src="/js/register.js"></script>
 </body>
 </html> 
