@@ -4,7 +4,8 @@ const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
-    role: { type: String, enum: ["customer", "admin"], default: "customer" },
+    role: { type: String, enum: ["user", "admin"], default: "user" },
+    status: { type: String, enum: ["active", "inactive"], default: "active" },
     address: {
         street: String,
         city: String,
@@ -85,6 +86,56 @@ const promotionSchema = new mongoose.Schema({
     usedCount: { type: Number, default: 0 },
 });
 
+const articleSchema = new mongoose.Schema({
+    title: { type: String, required: true },
+    content: { type: String, required: true },
+    author: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
+    category: { type: String, required: true },
+    tags: [String],
+    image: String,
+    comments: [{
+        user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+        content: { type: String, required: true },
+        createdAt: { type: Date, default: Date.now }
+    }],
+    createdAt: { type: Date, default: Date.now },
+    updatedAt: Date
+});
+
+const notificationSchema = new mongoose.Schema({
+    type: {
+        type: String,
+        enum: ['product', 'order', 'system'],
+        default: 'system'
+    },
+    title: {
+        type: String,
+        required: true
+    },
+    message: {
+        type: String,
+        required: true
+    },
+    image: {
+        type: String
+    },
+    link: {
+        type: String
+    },
+    isRead: {
+        type: Boolean,
+        default: false
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
+});
+
 const User = mongoose.model('User', userSchema);
 
 const Product = mongoose.model('Product', productSchema);
@@ -101,6 +152,10 @@ const Supplier = mongoose.model('Supplier', supplierSchema);
 
 const Promotion = mongoose.model('Promotion', promotionSchema);
 
+const Article = mongoose.model('Article', articleSchema);
+
+const Notification = mongoose.model('Notification', notificationSchema);
+
 // Export all models
 module.exports = {
     User,
@@ -110,5 +165,7 @@ module.exports = {
     Review,
     Category,
     Supplier,
-    Promotion
+    Promotion,
+    Article,
+    Notification
 };
