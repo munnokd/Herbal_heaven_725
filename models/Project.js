@@ -39,7 +39,7 @@ const orderSchema = new mongoose.Schema({
     ],
     totalAmount: { type: Number, required: true },
     paymentStatus: { type: String, enum: ["pending", "paid", "failed"], default: "pending" },
-    paymentMethod: { type: String, enum: ["stripe", "paypal"] },
+    paymentMethod: { type: String, enum: ["stripe", "paypal", "cash"] },
     deliveryAddress: { type: Object }, // Copy of user's address at checkout
     status: { type: String, enum: ["processing", "shipped", "delivered"], default: "processing" },
     createdAt: { type: Date, default: Date.now },

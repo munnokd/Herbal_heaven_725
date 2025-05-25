@@ -8,6 +8,7 @@ const orderController = require("../controllers/orderController");
 router.get("/", auth, orderController.getUserOrders);
 router.get("/:id", auth, orderController.getOrderById);
 router.post("/", auth, orderController.createOrder);
+router.post("/direct-checkout", auth, orderController.directCheckout);
 
 // Admin routes
 router.get("/admin/all", adminAuth, orderController.getAllOrders);

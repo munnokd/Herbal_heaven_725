@@ -226,8 +226,53 @@ async function applyPromoCode() {
 }
 
 // Proceed to Checkout
-function proceedToCheckout() {
-    window.location.href = '/checkout';
+async function proceedToCheckout() {
+    try {
+        const token = localStorage.getItem('token');
+        const user = JSON.parse(localStorage.getItem('user'));
+        
+        if (!token || !user) {
+            window.location.href = '/login?redirect=/cart';
+            return;
+        }
+        
+        // Get user's address from profile or use a default one for now
+        const deliveryAddress = {
+            street: "Default Street",
+            city: "Default City",
+            state: "Default State",
+            postalCode: "12345"
+        };
+        
+        // Create order directly without payment
+        const response = await fetch('/api/orders/direct-checkout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            body: JSON.stringify({
+                deliveryAddress
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Show success message
+            showToast('Order placed successfully!', 'green');
+            
+            // Redirect to order confirmation page
+            setTimeout(() => {
+                window.location.href = `/order-confirmation.html?id=${data.order._id}`;
+            }, 2000);
+        } else {
+            throw new Error(data.message || 'Failed to place order');
+        }
+    } catch (error) {
+        console.error('Error placing order:', error);
+        showToast(error.message || 'Error placing order', 'red');
+    }
 }
 
 // Show Toast Message

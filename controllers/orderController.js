@@ -32,6 +32,63 @@ exports.getOrderById = async (req, res) => {
     }
 };
 
+// Direct checkout without payment (for development)
+exports.directCheckout = async (req, res) => {
+    try {
+        const { deliveryAddress } = req.body;
+
+        // Get user's cart
+        const cart = await Cart.findOne({ user: req.user._id })
+            .populate('items.product');
+
+        if (!cart || cart.items.length === 0) {
+            return res.status(400).json({ message: 'Cart is empty' });
+        }
+
+        // Calculate total amount
+        let totalAmount = 0;
+        for (const item of cart.items) {
+            totalAmount += item.product.price * item.quantity;
+        }
+
+        // Create order directly without payment processing
+        const order = new Order({
+            user: req.user._id,
+            items: cart.items.map(item => ({
+                product: item.product._id,
+                quantity: item.quantity,
+                priceAtPurchase: item.product.price
+            })),
+            totalAmount,
+            paymentStatus: 'pending', // Mark as pending since no payment was made
+            paymentMethod: 'cash', // Use cash as default for direct checkout
+            deliveryAddress: deliveryAddress || req.user.address,
+            status: 'processing'
+        });
+
+        await order.save();
+
+        // Update product stock
+        for (const item of cart.items) {
+            await Product.findByIdAndUpdate(item.product._id, {
+                $inc: { stock: -item.quantity }
+            });
+        }
+
+        // Clear cart
+        cart.items = [];
+        await cart.save();
+
+        res.status(201).json({ 
+            message: 'Order placed successfully', 
+            order 
+        });
+    } catch (error) {
+        console.error('Error creating order:', error);
+        res.status(400).json({ error: error.message });
+    }
+};
+
 // Create new order
 exports.createOrder = async (req, res) => {
     try {
